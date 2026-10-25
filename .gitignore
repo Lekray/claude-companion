@@ -1,0 +1,4 @@
+node_modules/
+*.vsix
+__pycache__/
+.claude/settings.local.json*

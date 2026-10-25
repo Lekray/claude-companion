@@ -1,0 +1,90 @@
+name: build
+
+on:
+  push:
+    branches:
+      - '**'
+    tags:
+      - 'v*'
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: validate and package
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Syntax check
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check extension.js
+          node --check uninstall.js
+          for file in src/*.js; do node --check "$file"; done
+
+      - name: Unit tests
+        shell: bash
+        run: node --test "test/**/*.test.js"
+
+      - name: Validate JSON files
+        shell: bash
+        run: |
+          set -euo pipefail
+          node -e 'const fs=require("fs");let bad=0;for(const f of process.argv.slice(1)){try{JSON.parse(fs.readFileSync(f,"utf8"));console.log("ok "+f)}catch(e){console.error("INVALID "+f+": "+e.message);bad++}}process.exit(bad?1:0);' package.json package.nls*.json
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Build vsix
+        shell: bash
+        run: python scripts/build-vsix.py . dev out.vsix
+
+      - name: Upload vsix
+        uses: actions/upload-artifact@v4
+        with:
+          name: claude-companion-dev-vsix
+          path: out.vsix
+          if-no-files-found: error
+
+  release:
+    name: publish release
+    needs: validate
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Build vsix
+        shell: bash
+        run: python scripts/build-vsix.py . "${GITHUB_REF_NAME#v}" "claude-companion-${GITHUB_REF_NAME#v}.vsix"
+
+      - name: Create GitHub release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh release view "${GITHUB_REF_NAME}" >/dev/null 2>&1; then
+            gh release upload "${GITHUB_REF_NAME}" "claude-companion-${GITHUB_REF_NAME#v}.vsix" --clobber
+          else
+            gh release create "${GITHUB_REF_NAME}" "claude-companion-${GITHUB_REF_NAME#v}.vsix" --title "Claude Code Companion ${GITHUB_REF_NAME#v}" --generate-notes
+          fi

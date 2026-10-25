@@ -1,0 +1,218 @@
+{
+	"name": "claude-companion",
+	"publisher": "lekra",
+	"displayName": "%displayName%",
+	"description": "%description%",
+	"version": "0.3.0",
+	"license": "MIT",
+	"engines": {
+		"vscode": "^1.100.0"
+	},
+	"categories": [
+		"AI",
+		"Other"
+	],
+	"keywords": [
+		"claude",
+		"claude-code",
+		"anthropic",
+		"ai",
+		"assistant"
+	],
+	"galleryBanner": {
+		"color": "#1F1E1D",
+		"theme": "dark"
+	},
+	"activationEvents": [
+		"*"
+	],
+	"main": "./extension.js",
+	"icon": "resources/icon.png",
+	"scripts": {
+		"vscode:uninstall": "node ./uninstall.js"
+	},
+	"contributes": {
+		"icons": {
+			"claude-companion-logo": {
+				"description": "Claude Code Companion",
+				"default": {
+					"fontPath": "./resources/claude-companion.woff",
+					"fontCharacter": "\\E001"
+				}
+			}
+		},
+		"configuration": {
+			"title": "%displayName%",
+			"properties": {
+				"claudeCompanion.statusBar": {
+					"type": "boolean",
+					"default": true,
+					"description": "%config.statusBar.description%"
+				},
+				"claudeCompanion.sessionStatus": {
+					"type": "boolean",
+					"default": true,
+					"description": "%config.sessionStatus.description%"
+				},
+				"claudeCompanion.tabStatusMarkers": {
+					"type": "boolean",
+					"default": true,
+					"description": "%config.tabStatusMarkers.description%"
+				},
+				"claudeCompanion.usageInStatusBar": {
+					"type": "boolean",
+					"default": true,
+					"description": "%config.usageInStatusBar.description%"
+				},
+				"claudeCompanion.soundDone": {
+					"type": "boolean",
+					"default": true,
+					"description": "%config.soundDone.description%"
+				},
+				"claudeCompanion.soundWaiting": {
+					"type": "boolean",
+					"default": true,
+					"description": "%config.soundWaiting.description%"
+				},
+				"claudeCompanion.soundError": {
+					"type": "boolean",
+					"default": true,
+					"description": "%config.soundError.description%"
+				},
+				"claudeCompanion.doneSoundMinSeconds": {
+					"type": "number",
+					"default": 20,
+					"minimum": 0,
+					"description": "%config.doneSoundMinSeconds.description%"
+				},
+				"claudeCompanion.notifications": {
+					"type": "boolean",
+					"default": false,
+					"description": "%config.notifications.description%"
+				},
+				"claudeCompanion.alerts": {
+					"type": "boolean",
+					"default": true,
+					"description": "%config.alerts.description%"
+				},
+				"claudeCompanion.alertThreshold5h": {
+					"type": "number",
+					"default": 0.8,
+					"minimum": 0,
+					"maximum": 1,
+					"description": "%config.alertThreshold5h.description%"
+				},
+				"claudeCompanion.alertThreshold7d": {
+					"type": "number",
+					"default": 0.9,
+					"minimum": 0,
+					"maximum": 1,
+					"description": "%config.alertThreshold7d.description%"
+				},
+				"claudeCompanion.alertDeepseekBelowUsd": {
+					"type": "number",
+					"default": 1,
+					"minimum": 0,
+					"description": "%config.alertDeepseekBelowUsd.description%"
+				},
+				"claudeCompanion.contextWarnTokens": {
+					"type": "number",
+					"default": 300000,
+					"minimum": 0,
+					"description": "%config.contextWarnTokens.description%"
+				},
+				"claudeCompanion.manageHooks": {
+					"type": "boolean",
+					"default": true,
+					"description": "%config.manageHooks.description%"
+				},
+				"claudeCompanion.port": {
+					"type": "number",
+					"default": 47823,
+					"minimum": 1024,
+					"maximum": 65535,
+					"description": "%config.port.description%"
+				},
+				"claudeCompanion.proxy": {
+					"type": "string",
+					"default": "",
+					"description": "%config.proxy.description%"
+				},
+				"claudeCompanion.trackNestedSessions": {
+					"type": "boolean",
+					"default": false,
+					"description": "%config.trackNestedSessions.description%"
+				},
+				"claudeCompanion.deepseekToggle": {
+					"type": "boolean",
+					"default": true,
+					"description": "%config.deepseekToggle.description%"
+				},
+				"claudeCompanion.deepseekInStatusBar": {
+					"type": "boolean",
+					"default": true,
+					"description": "%config.deepseekInStatusBar.description%"
+				},
+				"claudeCompanion.deepseekScope": {
+					"type": "string",
+					"enum": ["project", "user"],
+					"enumDescriptions": ["%config.deepseekScope.project%", "%config.deepseekScope.user%"],
+					"default": "project",
+					"description": "%config.deepseekScope.description%"
+				},
+				"claudeCompanion.deepseekScript": {
+					"type": "string",
+					"default": "",
+					"description": "%config.deepseekScript.description%"
+				}
+			}
+		},
+		"commands": [
+			{
+				"command": "claudeCompanion.menu",
+				"title": "%command.menu.title%"
+			},
+			{
+				"command": "claudeCompanion.usage",
+				"title": "%command.usage.title%",
+				"icon": "$(graph)"
+			},
+			{
+				"command": "claudeCompanion.refresh",
+				"title": "%command.refresh.title%",
+				"icon": "$(refresh)"
+			},
+			{
+				"command": "claudeCompanion.testSounds",
+				"title": "%command.testSounds.title%",
+				"icon": "$(unmute)"
+			},
+			{
+				"command": "claudeCompanion.installHooks",
+				"title": "%command.installHooks.title%"
+			},
+			{
+				"command": "claudeCompanion.removeHooks",
+				"title": "%command.removeHooks.title%"
+			},
+			{
+				"command": "claudeCompanion.deepseekToggle",
+				"title": "%command.deepseekToggle.title%",
+				"icon": "$(circle-filled)"
+			},
+			{
+				"command": "claudeCompanion.diagnostics",
+				"title": "%command.diagnostics.title%",
+				"icon": "$(pulse)"
+			}
+		],
+		"menus": {
+			"commandPalette": [
+				{
+					"command": "claudeCompanion.menu",
+					"when": "false"
+				}
+			]
+		}
+	}
+}

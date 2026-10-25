@@ -1,0 +1,19 @@
+Third-party notices
+===================
+
+Original assets
+  resources/claude-companion.woff, resources/icon.png, resources/done.wav,
+  resources/waiting.wav and resources/error.wav are original works generated
+  by scripts/gen-assets.py in this repository. The glyph is an original
+  eight-ray spark; it is not derived from any company's logo. The sounds are
+  synthesised from sine tones; they are not sampled from any existing cue.
+
+Trademarks
+  "Claude" is a trademark of Anthropic, PBC. This project is unofficial and
+  is not affiliated with, endorsed by or sponsored by Anthropic. The official
+  Claude Code VS Code extension is a separate product of Anthropic; this
+  extension neither modifies nor redistributes it.
+
+License
+  The source code of this extension is distributed under the MIT license,
+  see LICENSE.
