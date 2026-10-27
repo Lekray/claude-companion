@@ -33,12 +33,15 @@ Claude 额度通过 Claude Code 已保存的 OAuth 令牌从 `https://api.anthro
 
 VS Code 不允许一个扩展修改另一个扩展的标签页标题，因此本扩展会在 Claude Code 扩展的 `extension.js` 中插入两个很小的钩子（首份原始文件保存为 `extension.js.bak-claude-companion`）。补丁要么完整应用，要么完全不应用，并能自动恢复：每次启动以及扩展列表变化时都会检查，因此 Claude Code 更新后会自动重新打补丁，VS Code 会请求**重新加载一次窗口**。如果将来的 Claude 版本大幅改动了这段代码，标签页标记会关闭并只提示一次，其余功能照常。没有本扩展时，被修改的代码只会显示普通标题。可通过 `claudeCompanion.tabStatusMarkers` 关闭。
 
+同一补丁还会用项目（工作区）名称代替“Claude Code”以及 Claude 生成的会话标题来命名 Claude Code 标签页（`claudeCompanion.projectTabTitle`：默认 `always`；`untitled` 仅在会话获得自己的标题之前；`off` 关闭）。会话标题仍显示在状态栏的悬停提示中。
+
 ## 设置项
 
 | 设置 | 默认值 | 说明 |
 |---|---|---|
 | `claudeCompanion.statusBar` | `true` | 在状态栏显示 Companion 图标。 |
 | `claudeCompanion.tabStatusMarkers` | `true` | 在 Claude Code 标签页标题前显示会话状态（会给 Claude 扩展打补丁，见下文）。 |
+| `claudeCompanion.projectTabTitle` | `always` | 用项目名称命名 Claude Code 标签页：`always` 始终、`untitled` 仅在会话尚无标题时、`off` 关闭（同一补丁）。 |
 | `claudeCompanion.sessionStatus` | `true` | 显示各会话状态计数（`~` 正在工作，`?` 等待你，`V` 已完成，`!` 出错）。 |
 | `claudeCompanion.usageInStatusBar` | `true` | 在状态栏显示 5 小时和 7 天额度的使用百分比。 |
 | `claudeCompanion.soundDone` | `true` | 回合结束时播放上行提示音。 |

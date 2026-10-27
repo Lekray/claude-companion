@@ -89,3 +89,20 @@ test("decorateTitle and stripMarker", () => {
 	assert.equal(patch.stripMarker("[!] x"), "x");
 	assert.equal(patch.stripMarker("[x] y"), "[x] y");
 });
+
+test("decorateTitle: mode always keeps the project name over the session title", () => {
+	assert.equal(patch.decorateTitle("Fix parser", "done", true, "my-app", "always"), "[V] my-app");
+	assert.equal(patch.decorateTitle("Claude Code", "", true, "my-app", "always"), "my-app");
+	assert.equal(patch.decorateTitle("Fix parser", "done", true, "", "always"), "[V] Fix parser");
+	assert.equal(patch.decorateTitle("Fix parser", "done", true, "my-app", "off"), "[V] Fix parser");
+	assert.equal(patch.decorateTitle("Claude Code", "", true, "my-app", "off"), "Claude Code");
+});
+
+test("decorateTitle names an untitled tab after the project", () => {
+	assert.equal(patch.decorateTitle("Claude Code", "", true, "my-app"), "my-app");
+	assert.equal(patch.decorateTitle("Claude Code", "working", true, "my-app"), "[~] my-app");
+	assert.equal(patch.decorateTitle("[V] Claude Code", "done", false, "my-app"), "my-app");
+	assert.equal(patch.decorateTitle("Fix parser", "done", true, "my-app"), "[V] Fix parser");
+	assert.equal(patch.decorateTitle("Claude Code", "working", true, ""), "[~] Claude Code");
+	assert.equal(patch.decorateTitle("Claude Code", "working"), "[~] Claude Code");
+});

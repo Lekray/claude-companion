@@ -59,6 +59,17 @@
 					"default": true,
 					"description": "%config.tabStatusMarkers.description%"
 				},
+				"claudeCompanion.projectTabTitle": {
+					"type": "string",
+					"enum": ["always", "untitled", "off"],
+					"enumDescriptions": [
+						"%config.projectTabTitle.always%",
+						"%config.projectTabTitle.untitled%",
+						"%config.projectTabTitle.off%"
+					],
+					"default": "always",
+					"description": "%config.projectTabTitle.description%"
+				},
 				"claudeCompanion.usageInStatusBar": {
 					"type": "boolean",
 					"default": true,

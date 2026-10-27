@@ -90,6 +90,39 @@ test("Claude's 25-character tab labels truncate to 24 plus an ellipsis", () => {
 	assert.equal(x.truncateTitle(null), "");
 });
 
+test("a tab is named after the project, truncated like Claude's labels", () => {
+	const ws = vscodeStub.workspace;
+	try {
+		ws.name = "claude-companion";
+		assert.equal(x.projectTabTitle(), "claude-companion");
+		ws.name = "a".repeat(30);
+		assert.equal(x.projectTabTitle(), "a".repeat(24) + "…");
+		ws.name = "Dev (Workspace)";
+		assert.equal(x.projectTabTitle(), "Dev (Workspace)");
+		ws.workspaceFile = { fsPath: "dev.code-workspace" };
+		assert.equal(x.projectTabTitle(), "Dev");
+		ws.workspaceFile = undefined;
+		ws.name = undefined;
+		assert.equal(x.projectTabTitle(), "");
+		ws.name = "claude-companion";
+		assert.equal(x.projectTabTitleMode(), "always");
+		config.projectTabTitle = "untitled";
+		assert.equal(x.projectTabTitleMode(), "untitled");
+		assert.equal(x.projectTabTitle(), "claude-companion");
+		config.projectTabTitle = true;
+		assert.equal(x.projectTabTitleMode(), "always");
+		config.projectTabTitle = "off";
+		assert.equal(x.projectTabTitle(), "");
+		config.projectTabTitle = false;
+		assert.equal(x.projectTabTitleMode(), "off");
+		assert.equal(x.projectTabTitle(), "");
+	} finally {
+		delete ws.name;
+		delete ws.workspaceFile;
+		delete config.projectTabTitle;
+	}
+});
+
 test("effects belong to their owner; null effects belong to the leader", () => {
 	assert.equal(x.effectApplies({ owner: "w1", kind: "done" }, false, "w1"), true);
 	assert.equal(x.effectApplies({ owner: "w1", kind: "done" }, true, "w2"), false);

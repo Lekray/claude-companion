@@ -108,9 +108,9 @@ const STR = {
 		usageNetwork: "Claude usage request failed — network or proxy unavailable",
 		usageStale: (time) => `Showing data from ${time}`,
 		usageRetry: (time) => `next attempt at ${time}`,
-		patchReload: "Claude Code Companion added tab status markers to Claude Code — reload the window to see them.",
+		patchReload: "Claude Code Companion patched the Claude Code tabs (status markers, project names) — reload the window to see them.",
 		reloadWindow: "Reload Window",
-		patchFailed: (v) => `Claude Code Companion: tab status markers are unavailable for Claude Code ${v} (its code changed). Everything else keeps working.`,
+		patchFailed: (v) => `Claude Code Companion: tab status markers and project names are unavailable for Claude Code ${v} (its code changed). Everything else keeps working.`,
 		tabMarkersLabel: "Tab markers",
 		tabsTracked: (n) => `${n} tab(s) tracked`,
 		tokenExpired: "Claude login token expired — it refreshes when Claude Code is next used",
@@ -232,9 +232,9 @@ const STR = {
 		usageNetwork: "Не удалось получить лимиты Claude — нет сети или прокси недоступен",
 		usageStale: (time) => `Показаны данные на ${time}`,
 		usageRetry: (time) => `следующая попытка в ${time}`,
-		patchReload: "Claude Code Companion добавил статусы во вкладки Claude Code — перезагрузите окно, чтобы их увидеть.",
+		patchReload: "Claude Code Companion доработал вкладки Claude Code (статусы, имя проекта) — перезагрузите окно, чтобы их увидеть.",
 		reloadWindow: "Перезагрузить окно",
-		patchFailed: (v) => `Claude Code Companion: статусы во вкладках недоступны для Claude Code ${v} (изменился его код). Остальное работает.`,
+		patchFailed: (v) => `Claude Code Companion: статусы и имя проекта во вкладках недоступны для Claude Code ${v} (изменился его код). Остальное работает.`,
 		tabMarkersLabel: "Статусы во вкладках",
 		tabsTracked: (n) => `отслеживается вкладок: ${n}`,
 		tokenExpired: "Токен входа Claude истёк — он обновится при следующем использовании Claude Code",
@@ -353,9 +353,9 @@ const STR = {
 		usageNetwork: "获取 Claude 用量失败——网络或代理不可用",
 		usageStale: (time) => `显示的是 ${time} 的数据`,
 		usageRetry: (time) => `下次尝试时间 ${time}`,
-		patchReload: "Claude Code Companion 已为 Claude Code 标签页添加状态标记——重新加载窗口后可见。",
+		patchReload: "Claude Code Companion 已修改 Claude Code 标签页（状态标记、项目名称）——重新加载窗口后可见。",
 		reloadWindow: "重新加载窗口",
-		patchFailed: (v) => `Claude Code Companion：Claude Code ${v} 的代码已变化，标签页状态标记不可用，其余功能正常。`,
+		patchFailed: (v) => `Claude Code Companion：Claude Code ${v} 的代码已变化，标签页状态标记和项目名称不可用，其余功能正常。`,
 		tabMarkersLabel: "标签页状态标记",
 		tabsTracked: (n) => `已跟踪 ${n} 个标签页`,
 		tokenExpired: "Claude 登录令牌已过期——下次使用 Claude Code 时会自动刷新",
@@ -1825,6 +1825,29 @@ function tabMarkersEnabled() {
 	return setting("tabStatusMarkers", true) !== false;
 }
 
+// "always" | "untitled" | "off"; a boolean from an early build maps to always / off.
+function projectTabTitleMode() {
+	const value = setting("projectTabTitle", "always");
+	if (value === false || value === "off") return "off";
+	return value === "untitled" ? "untitled" : "always";
+}
+
+function projectTabTitlesEnabled() {
+	return projectTabTitleMode() !== "off";
+}
+
+// The project name a Claude tab is called instead of Claude's own title (see projectTabTitleMode).
+function projectTabTitle() {
+	if (!projectTabTitlesEnabled()) return "";
+	return safe(() => {
+		let name = String(vscode.workspace.name || "");
+		// A multi-root workspace is named "<file> (Workspace)"; the suffix is noise in a tab.
+		if (vscode.workspace.workspaceFile) name = name.replace(/\s*\([^)]*\)$/, "");
+		name = name.trim();
+		return name ? truncateTitle(name) : "";
+	}, "");
+}
+
 function hostSessionId(host) {
 	const anchor = host && host.tabBadgeAnchor;
 	return anchor && typeof anchor.sessionId === "string" ? anchor.sessionId : "";
@@ -1839,11 +1862,21 @@ function hostStatus(host) {
 
 // Re-applies the marker of one host; drops hosts whose panel is gone.
 function retitleHost(host) {
-	if (typeof host.__ccTitle !== "string") return;
 	try {
 		const panel = host.panelTab;
 		if (!panel) return;
-		const title = patch.decorateTitle(host.__ccTitle, hostStatus(host), tabMarkersEnabled());
+		// Until Claude's first rename the panel still carries its creation title, which is raw.
+		if (typeof host.__ccTitle !== "string") {
+			if (typeof panel.title !== "string") return;
+			host.__ccTitle = patch.stripMarker(panel.title);
+		}
+		const title = patch.decorateTitle(
+			host.__ccTitle,
+			hostStatus(host),
+			tabMarkersEnabled(),
+			projectTabTitle(),
+			projectTabTitleMode()
+		);
 		if (panel.title !== title) panel.title = title;
 	} catch {
 		tabHosts.delete(host);
@@ -1858,7 +1891,7 @@ function installTabHooks() {
 	globalThis.__claudeCompanionTabTitle = (host, raw) => {
 		try {
 			tabHosts.add(host);
-			return patch.decorateTitle(raw, hostStatus(host), tabMarkersEnabled());
+			return patch.decorateTitle(raw, hostStatus(host), tabMarkersEnabled(), projectTabTitle(), projectTabTitleMode());
 		} catch {
 			return raw;
 		}
@@ -1892,7 +1925,7 @@ let patchState = "not checked";
 // Claude updates often and each version is a new folder, so this runs on every start and whenever
 // the set of installed extensions changes.
 async function ensureClaudePatched(reason) {
-	if (!tabMarkersEnabled()) {
+	if (!tabMarkersEnabled() && !projectTabTitlesEnabled()) {
 		patchState = "disabled";
 		return;
 	}
@@ -2380,7 +2413,7 @@ function handleConfigChange(event) {
 		resetDeepseekCache();
 		watchDeepseekFile();
 	}
-	if (affects("claudeCompanion.tabStatusMarkers")) {
+	if (affects("claudeCompanion.tabStatusMarkers") || affects("claudeCompanion.projectTabTitle")) {
 		retitleAllTabs();
 		void ensureClaudePatched("config").catch((err) => logLine(`[patch] ${errorText(err)}`));
 	}
@@ -2560,6 +2593,8 @@ module.exports = {
 	// Pure helpers exposed for test/extension.test.js (not part of the extension API).
 	_test: {
 		STR,
+		projectTabTitle,
+		projectTabTitleMode,
 		buildStatusText,
 		buildSessionPart,
 		buildUsagePart,

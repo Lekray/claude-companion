@@ -33,6 +33,8 @@ Claude limits are fetched from `https://api.anthropic.com/api/oauth/usage` with 
 
 VS Code gives no extension access to another extension's tab titles, so the companion inserts two tiny hooks into the Claude Code extension's `extension.js` (the first pristine copy is kept as `extension.js.bak-claude-companion`). The patch is all-or-nothing and self-healing: it is checked on every start and whenever extensions change, so after a Claude Code update it is re-applied automatically and VS Code asks for **one window reload**. If a future Claude build changes that code beyond recognition, the markers switch off with a single warning and everything else keeps working. Without the companion the patched code simply shows the plain title. Turn it off with `claudeCompanion.tabStatusMarkers`.
 
+The same patch names Claude Code tabs after the project (workspace) instead of "Claude Code" and the session titles Claude generates (`claudeCompanion.projectTabTitle`: `always` by default, `untitled` = only until the session gets its own title, `off`). The session titles stay in the status bar tooltip.
+
 ## Settings
 
 | Setting | Default | Description |
@@ -40,6 +42,7 @@ VS Code gives no extension access to another extension's tab titles, so the comp
 | `claudeCompanion.statusBar` | `true` | Show the Companion status bar item. |
 | `claudeCompanion.sessionStatus` | `true` | Show the per-session status counters (`~` working, `?` waiting, `V` done, `!` error). |
 | `claudeCompanion.tabStatusMarkers` | `true` | Prefix Claude Code tab titles with the session status (patches the Claude extension, see above). |
+| `claudeCompanion.projectTabTitle` | `always` | Name Claude Code tabs after the project: `always`, `untitled` (only until the session has a title) or `off` (same patch). |
 | `claudeCompanion.usageInStatusBar` | `true` | Show the 5-hour and 7-day usage percentages in the status bar. |
 | `claudeCompanion.soundDone` | `true` | Rising chime when a turn finishes. |
 | `claudeCompanion.soundWaiting` | `true` | Double ping when Claude needs you. |

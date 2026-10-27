@@ -32,5 +32,9 @@
 	"config.deepseekScope.project": "当前文件夹（.claude/settings.local.json）— 与 claude-ds on 写入的文件相同。",
 	"config.deepseekScope.user": "所有项目（~/.claude/settings.json）— 与 claude-ds on --user 写入的文件相同。",
 	"config.deepseekScript.description": "claude-ds 脚本路径；留空 = <Claude 目录>/deepseek/claude-ds.mjs。DeepSeek 密钥和备份文件由该脚本管理，Companion 不会自行写入。",
-	"config.tabStatusMarkers.description": "在 Claude Code 标签页标题前显示会话状态：[~] 运行中、[?] 等待您、[V] 已完成、[!] 出错。需要对 Claude Code 扩展做一个小补丁，其更新后会自动重新应用（每次需重新加载一次窗口）。"
+	"config.tabStatusMarkers.description": "在 Claude Code 标签页标题前显示会话状态：[~] 运行中、[?] 等待您、[V] 已完成、[!] 出错。需要对 Claude Code 扩展做一个小补丁，其更新后会自动重新应用（每次需重新加载一次窗口）。",
+	"config.projectTabTitle.description": "用项目（工作区）名称命名 Claude Code 标签页。与标签页状态标记使用同一个 Claude Code 扩展补丁。",
+	"config.projectTabTitle.always": "始终：标签页保持项目名称，会话标题不会替换它。",
+	"config.projectTabTitle.untitled": "仅在会话获得自己的标题之前（代替“Claude Code”）。",
+	"config.projectTabTitle.off": "关闭：使用 Claude 自己的标题。"
 }

@@ -32,5 +32,9 @@
 	"config.deepseekScope.project": "Current folder (.claude/settings.local.json) — the same file claude-ds on writes.",
 	"config.deepseekScope.user": "All projects (~/.claude/settings.json) — the same file claude-ds on --user writes.",
 	"config.deepseekScript.description": "Path to the claude-ds script; empty = <claude dir>/deepseek/claude-ds.mjs. The script owns the DeepSeek key and the backup files, so the companion never writes them itself.",
-	"config.tabStatusMarkers.description": "Prefix Claude Code tab titles with the session status: [~] working, [?] waiting for you, [V] done, [!] error. Requires a small patch of the Claude Code extension, re-applied automatically after its updates (one window reload each time)."
+	"config.tabStatusMarkers.description": "Prefix Claude Code tab titles with the session status: [~] working, [?] waiting for you, [V] done, [!] error. Requires a small patch of the Claude Code extension, re-applied automatically after its updates (one window reload each time).",
+	"config.projectTabTitle.description": "Name Claude Code tabs after the project (workspace). Uses the same patch of the Claude Code extension as the tab status markers.",
+	"config.projectTabTitle.always": "Always: the tab keeps the project name, the session title does not replace it.",
+	"config.projectTabTitle.untitled": "Only until the session gets its own title (instead of \"Claude Code\").",
+	"config.projectTabTitle.off": "Off: Claude's own titles."
 }

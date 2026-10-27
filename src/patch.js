@@ -78,12 +78,24 @@ async function patchFile(file, units = UNITS) {
 const STATUS_MARKERS = { working: "[~]", done: "[V]", error: "[!]", waiting: "[?]" };
 const MARKER_RE = /^(?:\[~]|\[V]|\[!]|\[\?])\s+/;
 
+// Claude's own title for a tab whose session has no title yet (a new chat).
+const UNTITLED_TAB_TITLE = "Claude Code";
+
 function stripMarker(title) {
 	return String(title || "").replace(MARKER_RE, "");
 }
 
-function decorateTitle(raw, status, enabled = true) {
+// `project` (already truncated) replaces every title in mode "always" and only Claude's
+// placeholder in mode "untitled"; the raw title itself stays untouched.
+function baseTitle(raw, project = "", mode = "untitled") {
 	const base = stripMarker(raw);
+	if (!project) return base;
+	if (mode === "always" || (mode === "untitled" && base === UNTITLED_TAB_TITLE)) return project;
+	return base;
+}
+
+function decorateTitle(raw, status, enabled = true, project = "", mode = "untitled") {
+	const base = baseTitle(raw, project, mode);
 	const marker = enabled ? STATUS_MARKERS[status] : null;
 	return marker ? `${marker} ${base}` : base;
 }
@@ -94,6 +106,8 @@ module.exports = {
 	applyUnits,
 	patchFile,
 	STATUS_MARKERS,
+	UNTITLED_TAB_TITLE,
 	stripMarker,
+	baseTitle,
 	decorateTitle
 };

@@ -32,5 +32,9 @@
 	"config.deepseekScope.project": "Текущая папка (.claude/settings.local.json) — тот же файл, что пишет claude-ds on.",
 	"config.deepseekScope.user": "Все проекты (~/.claude/settings.json) — тот же файл, что пишет claude-ds on --user.",
 	"config.deepseekScript.description": "Путь к скрипту claude-ds; пусто = <каталог Claude>/deepseek/claude-ds.mjs. Ключ DeepSeek и резервные копии принадлежат скрипту, поэтому Companion их сам не пишет.",
-	"config.tabStatusMarkers.description": "Показывать статус сессии в начале названия вкладки Claude Code: [~] работает, [?] ждёт вас, [V] готово, [!] ошибка. Требует небольшой правки расширения Claude Code; после его обновлений правка ставится заново автоматически (каждый раз нужна одна перезагрузка окна)."
+	"config.tabStatusMarkers.description": "Показывать статус сессии в начале названия вкладки Claude Code: [~] работает, [?] ждёт вас, [V] готово, [!] ошибка. Требует небольшой правки расширения Claude Code; после его обновлений правка ставится заново автоматически (каждый раз нужна одна перезагрузка окна).",
+	"config.projectTabTitle.description": "Называть вкладки Claude Code именем проекта (рабочей области). Использует ту же правку расширения Claude Code, что и статусы во вкладках.",
+	"config.projectTabTitle.always": "Всегда: вкладка сохраняет имя проекта, название сессии его не заменяет.",
+	"config.projectTabTitle.untitled": "Только пока у сессии нет своего названия (вместо «Claude Code»).",
+	"config.projectTabTitle.off": "Выключено: названия от самого Claude."
 }

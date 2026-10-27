@@ -267,9 +267,17 @@ nothing is written), keeps a pristine `.bak-claude-companion`, runs on activate 
 `extensions.onDidChange`, and asks for one reload when it changed the file. Without the companion
 the patched code falls back to the raw title. Deactivate restores raw titles.
 
+Claude names a tab without a session title `"Claude Code"` (both at panel creation and in the
+webview's `rename_tab`) and later renames it to the generated session title. `projectTabTitle`
+replaces the title with the workspace name (truncated like Claude's labels, multi-root
+` (Workspace)` suffix dropped): `always` — every title, `untitled` — only the placeholder, `off`.
+`__ccTitle` keeps Claude's raw title, so switching modes or deactivating restores it. A host seen
+before its first rename takes its raw title from the panel's creation title. The patch is applied
+while either `tabStatusMarkers` or `projectTabTitle` is on.
+
 ## Settings (`claudeCompanion.*`)
 
-`statusBar` (true), `sessionStatus` (true), `tabStatusMarkers` (true), `usageInStatusBar` (true), `soundDone` (true),
+`statusBar` (true), `sessionStatus` (true), `tabStatusMarkers` (true), `projectTabTitle` ("always"), `usageInStatusBar` (true), `soundDone` (true),
 `soundWaiting` (true), `soundError` (true), `doneSoundMinSeconds` (20), `notifications` (false),
 `alerts` (true), `alertThreshold5h` (0.8), `alertThreshold7d` (0.9), `alertDeepseekBelowUsd` (1),
 `contextWarnTokens` (300000, 0 = off), `manageHooks` (true), `port` (47823), `proxy` ("" = auto,

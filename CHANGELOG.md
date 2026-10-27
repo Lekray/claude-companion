@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Claude Code tabs are named after the project (workspace) instead of "Claude Code" and the generated session titles (setting `claudeCompanion.projectTabTitle`: `always` by default, `untitled` = only until the session gets its own title, `off`). It uses the same Claude Code patch as the tab status markers, which is now applied while either feature is on.
+
 ## [0.3.0] - 2026-10-24
 
 ### Added
